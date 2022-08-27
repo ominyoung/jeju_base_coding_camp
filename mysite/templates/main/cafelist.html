@@ -10,9 +10,11 @@
     <h1>cafelist</h1>
     <table>
         {% for cafe in cafes %}
-        <tr onclick="location.href='/cafedetails/{{cafe.pk}}'">
-            <td>{{cafe.name}}</td>
+        <tr>
+            <td><a href="{% url 'cafedetails' cafe.id %}">{{cafe.name}}</a></td>
             <td>{{cafe.content}}</td>
+            <td>{{cafe.published_date}}</td>
+            <td>{{cafe.modified_date}}</td>
         </tr>
         {% endfor %}
     </table>

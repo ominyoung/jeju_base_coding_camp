@@ -7,8 +7,13 @@
     <title>cafedetails</title>
 </head>
 <body>
+    <h1>cafedetails</h1>
     {{cafe.name}}
     <br>
     {{cafe.content}}
+    {% if cafe.mainphoto %}
+        <img src = "{{cafe.mainphoto.url}}">
+    {% endif %}
+    <a href="/cafelist/">목록</a>
 </body>
 </html>
