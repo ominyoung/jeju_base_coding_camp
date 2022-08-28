@@ -1,0 +1,27 @@
+{{selected_locations}}
+
+{{data.totCnt}}
+
+<hr>
+<table>
+{% for i in data.data %}
+    <!--라디오 버튼을 눌렀을 때-->
+    {% if selected_locations %}
+        {% for j in selected_locations %}
+        {% if j in i.addressDoro %}
+            <tr>
+                <td><a href="{% url 'hospitaldetail' i.companyName %}" value="{{i.companyName}}">{{i.companyName}}</a></td>
+                <td>{{i.licensingDate}}</td>
+                <td>{{i.addressDoro}}</td>
+                <td>{{i.medicalWorkerCount}}</td>
+                <td>{{i.patientRoomCount}}</td>
+                <td>{{i.medicalSubject}}</td>
+            </tr>
+        {% endif %}
+        {% endfor %}
+    <!--라디오 버튼을 누르지 않고 넘겼을 때-->
+    {% else %}
+        {{i}}
+    {% endif %}
+{% endfor %}
+</table>
