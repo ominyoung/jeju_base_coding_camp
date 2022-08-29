@@ -1,6 +1,10 @@
-from multiprocessing import context
-from django.shortcuts import render
+import json
+
+from django.shortcuts import render,redirect
 import requests
+
+from main.models import Review
+
 
 your_appkey = '6614t13ct60404b1333jr04t3r41_c60'
 status = '영업/정상'
@@ -31,6 +35,24 @@ def index(request):
 def hospitallist(request):
     selected_locations = request.GET.getlist('locations')
 
+    subjects = [
+        ('내과'),('정신의학과'),
+        ('외과'),
+        ('정형외과'),
+        ('신경외과'),
+        ('흉부외과'),
+        ('마취통증의학과'),
+        ('산부인과'),
+        ('소아청소년과'),
+        ('이비인후과'),
+        ('영상의학과'),
+        ('병리과'),
+        ('가정의학과'),
+        ('치과보철과'),
+        ('치과교정과'),
+        ('치주과'),
+    ]
+
     # 병원api
     url = f'https://open.jejudatahub.net/api/proxy/tbb1D1a1559at91ababaata1abtba58a/{your_appkey}?openStatus={status}&bizSmallType={bizSmallType}&limit=100'
 
@@ -40,6 +62,7 @@ def hospitallist(request):
     context={
         'selected_locations': selected_locations,
         'data':data,
+        'subjects':subjects
     }
     return render(request, 'hospitallist.html', context)
 
@@ -54,11 +77,32 @@ def hospitaldetail(request, name):
 
     # 데이터가 종종 update날짜만 다른 2개 이상인 값이 있음 ex) 서귀포열린병원
     # update 날짜가 최신인 것만 취급
-    print(dir(data['data']))
     data2 = sorted(data['data'], key=lambda x: x['updateAt'], reverse=True)
     data['data'] = data2
 
+    # 저장후 불러오기
+    hospital_reples = Review.objects.filter(companyName=name)
+
     context={
-        'data':data
+        'data':data,
+        'hospital_reples':hospital_reples,
     }
     return render(request,'hospitaldetail.html',context)
+
+
+def comment(request):
+    jsonOject = json.loads(request.body)
+
+    companyName=jsonOject.get('companyName')
+    
+    # db에 저장
+    reple = Review.objects.create(
+        user_id=jsonOject.get('user_id'),
+        title=jsonOject.get('title'),
+        content=jsonOject.get('content'),
+        star=jsonOject.get('star'),
+        companyName=jsonOject.get('companyName'),
+        licenseDate=jsonOject.get('licenseDate'),
+    )
+
+    return redirect('hospitaldetail', name=companyName)

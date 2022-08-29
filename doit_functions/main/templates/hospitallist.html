@@ -1,7 +1,19 @@
 {{selected_locations}}
 
-{{data.totCnt}}
+총 개수: {{data.totCnt}}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 
+<hr>
+{% for subject in subjects %}
+<div class="jejumap-item" id="jejumap-item-hangyeong">
+    <input type="checkbox" class="jejumap-check te-elem" id="check-area-{{ forloop.counter }}" data-city="notJcity" name='rad_sub' value='{{ subject }}'>
+    <div class="mapshape"></div>
+    <label class="jejumap-item-title te-elem" for="check-area-{{ forloop.counter }}">{{ subject }}</label>
+</div>
+{% endfor %}
+<button type="submit" class="Search">진료과목 찾기</button>
+
+<input type="text" id="search_subject">
 <hr>
 <table>
 {% for i in data.data %}
@@ -25,3 +37,13 @@
     {% endif %}
 {% endfor %}
 </table>
+
+<script>
+    let search = document.querySelector('.Search');
+    search.addEventListener('click', e=>{
+        var subject = $('input[name=rad_sub]:checked').val();
+        // alert(subject);
+        document.getElementById('search_subject').value = subject;
+    })
+    
+</script>
